@@ -26,11 +26,13 @@ export async function GET() {
 
     // Filter the transactions to find those sent to the burn address
     const burnedIds = data.result
-      .filter(tx => tx.to.toLowerCase() === BURN_ADDRESS.toLowerCase())
-      .map(tx => tx.tokenID);
+      .filter((tx: any) => tx.to.toLowerCase() === BURN_ADDRESS.toLowerCase())
+      .map((tx: any) => tx.tokenID);
 
-    // Remove duplicates by converting to a Set and back to an array
-    const uniqueBurnedIds = [...new Set(burnedIds)];
+    // Remove duplicates without using Set
+    const uniqueBurnedIds = burnedIds.filter((id: string, index: number, self: string[]) => 
+      self.indexOf(id) === index
+    );
 
     return NextResponse.json({ burnedIds: uniqueBurnedIds, total: uniqueBurnedIds.length });
   } catch (error) {
